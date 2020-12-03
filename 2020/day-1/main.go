@@ -15,7 +15,7 @@ func main() {
 	}
 	defer expenseReport.Close()
 
-	diffMap := getValuesMap(expenseReport)
+	diffMap := getDiffMap(expenseReport, 2020)
 
 	answer := findAnswer(diffMap)
 
@@ -24,9 +24,9 @@ func main() {
 	os.Exit(0)
 }
 
-func getValuesMap(f *os.File) map[int]int {
+func getDiffMap(f *os.File, year int) map[int]int {
 
-	valMap := make(map[int]int)
+	diffMap := make(map[int]int)
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
@@ -34,10 +34,10 @@ func getValuesMap(f *os.File) map[int]int {
 		if err != nil {
 			break
 		}
-		valMap[2020 - num] = num
+		diffMap[year - num] = num
 	}
 
-	return valMap
+	return diffMap
 }
 
 func findAnswer(diffMap map[int]int) int {
