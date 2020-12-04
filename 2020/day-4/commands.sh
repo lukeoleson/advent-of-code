@@ -1,6 +1,14 @@
 #!/bin/zsh
 
+#
+# Part 1 (remove the pipe and count the lines for the answer)
+#
+
 awk ' /^$/ { print; } /./ { printf("%s ", $0); } ' input.txt |
+
+#
+# Part 2 (takes input from part 1)
+#
 
 # byr (Birth Year) - four digits; at least 1920 and at most 2002.
 egrep '(.*byr:(?:19[2-9][0-9]|200[0-2])\s)' |
