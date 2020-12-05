@@ -9,33 +9,59 @@ import (
 
 func main() {
 
-	//part1()
+	part1()
 	part2()
-	os.Exit(0)
 }
 
 func part1() {
+
+	// open the file
 	expenseReport, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Printf("Unable to open the file: %v", err)
 	}
 	defer expenseReport.Close()
 
-	diffMap := getDiffMap(expenseReport, 2020)
+	//
+	// Build a map where the value is the value pulled from the list of
+	// values, and the key is the value we need to make this equal 2020
+	//
+	diffMap := make(map[int]int)
+	scanner := bufio.NewScanner(expenseReport)
+	for scanner.Scan() {
+		num, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			break
+		}
+		diffMap[2020 - num] = num
+	}
 
-	answer := findAnswer(diffMap)
+	//
+	// Plug the values into the map as keys if you find a key that works,
+	// then those two numbers must add to 2020
+	//
+	var answer int
+	for _, key := range diffMap {
+		val, match := diffMap[key]
+		if match == true {
+			answer = key * val
+			break
+		}
+	}
 
-	fmt.Println(answer)
+	fmt.Println("Part I: ", answer)
 }
 
 func part2() {
 
+	// open the file
 	expenseReport, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Printf("Unable to open the file: %v", err)
 	}
 	defer expenseReport.Close()
 
+	// Get all the numbers
 	var nums []int
 	scanner := bufio.NewScanner(expenseReport)
 	for scanner.Scan() {
@@ -46,6 +72,7 @@ func part2() {
 		nums = append(nums, num)
 	}
 
+	// loop through everything until you hit the one you want
 	var answer int
 	for i, val := range nums {
 		for j := i + 1; j < len(nums); j++ {
@@ -61,33 +88,6 @@ func part2() {
 			}
 		}
 	}
-	fmt.Println("answer: ", answer)
+	fmt.Println("Part II: ", answer)
 
-}
-
-func getDiffMap(f *os.File, year int) map[int]int {
-
-	diffMap := make(map[int]int)
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		num, err := strconv.Atoi(scanner.Text())
-		if err != nil {
-			break
-		}
-		diffMap[year - num] = num
-	}
-
-	return diffMap
-}
-
-func findAnswer(diffMap map[int]int) int {
-
-	for _, val := range diffMap {
-		val2, match := diffMap[val]
-		if match == true {
-			return val * val2
-		}
-	}
-
-	return 0
 }
